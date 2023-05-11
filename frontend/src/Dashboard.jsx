@@ -4,15 +4,34 @@ import { useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 function Dashboard() {
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
+
   useEffect(() => {
-    axios.get("/dashboard").then((res) => {
+    axios.get("http://localhost:8081/dashboard").then((res) => {
       if (res.data.Status === "Success") {
-        
+        if (res.data.role === "admin") {
+          navigate("/");
+        } else {
+          const id = res.data.id;
+
+          navigate("/employeedetail/" + id);
+        }
+        // console.log("Success");
       } else {
-        navigate("/login");
+        navigate("/start");
       }
     });
-  });
+  }, []);
+
+  const handleLogout = () => {
+    axios
+      .get("http://localhost:8081/logout")
+      .then((res) => {
+        navigate("/start");
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -61,7 +80,10 @@ function Dashboard() {
                 </li>
 
                 <li>
-                  <Link to="" className="nav-link px-0 align-middle text-white">
+                  <Link
+                    onClick={handleLogout}
+                    className="nav-link px-0 align-middle text-white"
+                  >
                     <i className="fs-4 bi-power"></i>
                     <span className="ms-1 d-none d-sm-inline">Logout</span>
                   </Link>

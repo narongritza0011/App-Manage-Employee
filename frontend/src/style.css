@@ -7,3 +7,9 @@ background-color: #4263EB;
     width: 40px;
     border-radius: 50%;
 }
+
+.empImg {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+}
