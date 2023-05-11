@@ -30,17 +30,12 @@ function EmployeeEdit() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const formdata = new FormData();
-    formdata.append("name", data.name);
-    formdata.append("email", data.email);
-    formdata.append("password", data.password);
-    formdata.append("address", data.address);
-    formdata.append("salary", data.salary);
-
     axios
-      .post("http://localhost:8081/create", formdata)
+      .put("http://localhost:8081/update/" + id, data)
       .then((res) => {
-        navigate("/employee");
+        if (res.data.Status === "Success") {
+          navigate("/employee");
+        }
       })
       .catch((err) => console.log(err));
   }
@@ -77,18 +72,7 @@ function EmployeeEdit() {
               value={data.email}
             />
           </div>
-          <div className="col-12">
-            <label htmlFor="inputPassword1" className="form-label">
-              Password
-            </label>
-            <input
-              type="password"
-              className="form-control"
-              id="inputPassword1"
-              placeholder="Enter Password"
-              onChange={(e) => SetData({ ...data, password: e.target.value })}
-            />
-          </div>
+
           <div className="col-12">
             <label htmlFor="inputSalary1" className="form-label">
               Salary

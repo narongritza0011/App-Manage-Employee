@@ -1,6 +1,18 @@
+import axios from "axios";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Link, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 function Dashboard() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios.get("/dashboard").then((res) => {
+      if (res.data.Status === "Success") {
+        
+      } else {
+        navigate("/login");
+      }
+    });
+  });
   return (
     <>
       <div className="container-fluid">

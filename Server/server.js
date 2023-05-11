@@ -7,7 +7,12 @@ import jwt from "jsonwebtoken";
 import multer from "multer";
 import path from "path";
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173/"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static("public"));
@@ -63,12 +68,34 @@ app.get("/get/:id", (req, res) => {
   });
 });
 
+app.put("/update/:id", (req, res) => {
+  // console.log(req.body);
+  const id = req.params.id;
+  const sql = "UPDATE employee set salary = ? WHERE id = ?";
+  con.query(sql, [req.body.salary, id], (err, result) => {
+    if (err) return res.json({ Error: "Update employee error in sql" });
+    return res.json({ Status: "Success" });
+  });
+});
+
+app.delete("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE  FROM  employee   WHERE id = ?";
+  con.query(sql, [id], (err, result) => {
+    if (err) return res.json({ Error: "Delete employee error in sql" });
+    return res.json({ Status: "Success" });
+  });
+});
+
 app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
   con.query(sql, [req.body.email, req.body.password], (err, result) => {
     if (err)
       return res.json({ Status: "Error", Error: "Error in running  query" });
     if (result.length > 0) {
+      const id = result[0].id;
+      const token = jwt.sign({ id }, "jwt-secret-key", { expiresIn: "1d" });
+      res.cookie("token", token);
       return res.json({ Status: "Success" });
     } else {
       return res.json({ Status: "Error", Error: "Wrong Email or Password" });

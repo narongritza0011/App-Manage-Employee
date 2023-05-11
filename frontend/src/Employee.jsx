@@ -13,11 +13,26 @@ function Employee() {
         if (res.data.Status === "Success") {
           setData(res.data.Result);
         } else {
-          alert("test");
+          alert("Error");
         }
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const handleDelete = (id) => {
+    // console.log(id);
+    axios
+      .delete("http://localhost:8081/delete/" + id)
+      .then((res) => {
+        // console.log(res);
+        if (res.data.Status === "Success") {
+          window.location.reload(true);
+        } else {
+          alert("Error");
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="px-5 py-3">
@@ -63,12 +78,12 @@ function Employee() {
                   >
                     edit
                   </Link>
-                  <Link
-                    to={`/employeeDelete/` + employee.id}
+                  <button
+                    onClick={(e) => handleDelete(employee.id)}
                     className="btn btn-danger btn-sm"
                   >
                     delete
-                  </Link>
+                  </button>
                 </td>
               </tr>
             );
